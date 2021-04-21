@@ -24,9 +24,25 @@ class CoinDB:
     def get_10m_notification_message() -> str:
         # TODO: CREATE MESSAGE EVERY 10M
         db = CoinDB()
-        btc_price = db.get_price_usd('BTC')
-        return f"{btc_price}"
+        messages = []
+        coins = []
+        for coin_dict in db.coins.values():
+            coin = CoinClass(coin_dict)
+            coins.append(coin)
+        coins.sort(key=lambda c: abs(c.changePercent24Hr), reverse=True)
+        coins = list(filter(lambda c: c.changePercent24Hr > 5, coins))
+        for coin in coins:
+            messages.append(f"Showing data for: {coin.symbol} | {coin.name}\nCurrent price ${coin.priceUsd} || Coin change (Past 24Hrs) {coin.changePercent24Hr}%")
+        return messages
 
+
+class CoinClass:
+    def __init__(self, dictionary):
+        for k, v in dictionary.items():
+            if k in ['priceUsd', 'changePercent24Hr']:
+                setattr(self, k, round(float(v), 2))
+            else:
+                setattr(self, k, v)
 
 
 ######

@@ -90,13 +90,14 @@ def show_market(update: Update, context: CallbackContext) -> None:
 
 def market_notification_10m(bot):
     while True:
+        message = '\n\n'.join(CoinDB.get_10m_notification_message())
         bot.send_message(
             CRYPTO_GROUP_ID,
-            f"{CoinDB.get_10m_notification_message()}",
+            f"{message}",
             parse_mode=ParseMode.HTML,
 
         )
-        time.sleep(600)
+        time.sleep(86400)
 
 
 def main() -> None:
@@ -118,7 +119,7 @@ def main() -> None:
     # non-blocking and will stop the bot gracefully.
     updater.idle()
 
-    # market_notification_10m(dispatcher.bot)
+    market_notification_10m(dispatcher.bot)
     ###### EXAMPLES ######
     # dispatcher.add_handler(CommandHandler("start", start))
     # dispatcher.add_handler(CommandHandler("help", start))
