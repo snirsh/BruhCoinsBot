@@ -11,9 +11,39 @@ class CoinDB:
         self._json = requests.get('http://api.coincap.io/v2/assets').json().get('data')
         self.coins = {coin_dict.get('symbol'): coin_dict for coin_dict in self._json}
 
-    def get_coin_data(self, symbol):
-        # TODO: Pretty print the data:
-        return self.coins[symbol]
+    def get_coin_data(self, symbol, some_currency_symbol):
+        try:
+            coin = CoinClass(self.coins[symbol])
+            if coin.symbol == coin.name:
+                symbol_and_name = f"{coin.name}"
+            else:
+                symbol_and_name = f"{coin.symbol} | {coin.name}"
+            try:
+                if some_currency_symbol:
+                    currency = some_currency_symbol
+                    custom_symbol = some_currency_symbol
+                    if some_currency_symbol.lower() == "boomerangs":
+                        currency = "AUD"
+                        custom_symbol = "🪃"
+                    elif some_currency_symbol.lower() == 'usd':
+                        custom_symbol = "$"
+                    try:
+                        price_tag = f"{round(CurrencyConverter().convert(coin.priceUsd, 'USD', currency.upper()), 2)} {custom_symbol.upper()}"
+                    except ValueError:
+                        price_tag = f"${coin.priceUsd}"
+            except ValueError:
+                price_tag = f"${coin.priceUsd}"
+            message = f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>{price_tag}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>\n'
+            if some_currency_symbol:
+                try:
+                    message += f"<b>Market Cap:</b> {'{:,.2f}'.format(round(CurrencyConverter().convert(coin.marketCapUsd, currency.upper()), 2))} {custom_symbol.upper()} | <b>24Hr Volume:</b> {'{:,.2f}'.format(round(CurrencyConverter().convert(coin.volumeUsd24Hr, currency.upper()), 2))} {custom_symbol.upper()}"
+                except ValueError:
+                    message += f"<b>Market Cap:</b> {'{:,.2f}'.format(coin.marketCapUsd)} $| <b>24Hr Volume:</b> {'{:,.2f}'.format(coin.volumeUsd24Hr)} $"
+            else:
+                message += f"<b>Market Cap:</b> {'{:,.2f}'.format(coin.marketCapUsd)} $| <b>24Hr Volume:</b> {'{:,.2f}'.format(coin.volumeUsd24Hr)} $"
+            return message
+        except KeyError:
+            raise KeyError
 
     def get_price_usd(self, symbol):
         return round(float(self.get_coin_data(symbol).get('priceUsd')), 2)
@@ -57,7 +87,7 @@ class CoinDB:
 class CoinClass:
     def __init__(self, dictionary):
         for k, v in dictionary.items():
-            if k in ['priceUsd', 'changePercent24Hr']:
+            if k in ['priceUsd', 'changePercent24Hr', 'marketCapUsd', 'volumeUsd24Hr']:
                 setattr(self, k, round(float(v), 2))
             else:
                 setattr(self, k, v)
@@ -76,3 +106,4 @@ class CoinClass:
 #     print(f"Current price ${round(float(coin_price_usd), 2)}")
 #     print(f"Coin change (Past 24Hrs) {round(float(coin_change_pct_24hr), 2)}%")
 #     print(coin_dict)
+# print(CoinDB().get_coin_data('BTC', 'usd'))

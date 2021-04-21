@@ -72,7 +72,7 @@ def unset(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(text)
 
 
-def show_market(update: Update, context: CallbackContext) -> None:
+def show_one_coin(update: Update, context: CallbackContext) -> None:
     chat_id = update.message.chat_id
     if chat_id == CRYPTO_GROUP_ID:
         update.message.reply_text("WRONG GROUP BRUH")
@@ -142,7 +142,7 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     # on different commands - answer in Telegram
-    dispatcher.add_handler(CommandHandler("supwith", show_market))
+    dispatcher.add_handler(CommandHandler("supwith", show_one_coin))
     dispatcher.add_handler(CommandHandler("UPDATEME", market_notification))
     dispatcher.add_handler(CommandHandler("help", help_msg))
 
