@@ -39,15 +39,15 @@ class CoinDB:
                 symbol_and_name = f"{coin.symbol} | {coin.name}"
             price_tag = f"${coin.priceUsd}"
             if some_currency_symbol:
+                currency = some_currency_symbol
+                custom_symbol = some_currency_symbol
                 if some_currency_symbol.lower() == "boomerangs":
                     currency = "AUD"
                     custom_symbol = "🪃"
                 elif some_currency_symbol.lower() == 'usd':
                     custom_symbol = "$"
-                else:
-                    custom_symbol = some_currency_symbol
                 try:
-                    price_tag = f"{round(CurrencyConverter().convert(coin.priceUsd, 'USD', currency), 2)} {custom_symbol}"
+                    price_tag = f"{round(CurrencyConverter().convert(coin.priceUsd, 'USD', currency.upper()), 2)} {custom_symbol.upper()}"
                 except ValueError:
                     price_tag = f"${coin.priceUsd}"
             messages.append(f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>{price_tag}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>')
@@ -62,7 +62,7 @@ class CoinClass:
             else:
                 setattr(self, k, v)
 
-# print('\n\n'.join(CoinDB().get_10m_notification_message(withConverter=True)))
+# print('\n\n'.join(CoinDB.get_10m_notification_message(some_currency_symbol='eur')))
 ######
 # assets_request_response = requests.get('http://api.coincap.io/v2/assets')
 #
