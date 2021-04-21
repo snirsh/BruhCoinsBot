@@ -1,4 +1,5 @@
 import requests
+from currency_converter import CurrencyConverter
 
 
 class CoinDB:
@@ -21,7 +22,7 @@ class CoinDB:
         return round(float(self.get_coin_data(symbol).get('changePercent24Hr')), 2)
 
     @staticmethod
-    def get_10m_notification_message() -> str:
+    def get_10m_notification_message(withConverter=False) -> str:
         # TODO: CREATE MESSAGE EVERY 10M
         db = CoinDB()
         messages = []
@@ -36,7 +37,11 @@ class CoinDB:
                 symbol_and_name = f"{coin.name}"
             else:
                 symbol_and_name = f"{coin.symbol} | {coin.name}"
-            messages.append(f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>${coin.priceUsd}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>')
+            if withConverter:
+                price_tag = f"{CurrencyConverter().convert(coin.priceUsd, 'USD', 'AUD')} AUD"
+            else:
+                price_tag = f"${coin.priceUsd}"
+            messages.append(f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>{price_tag}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>')
         return messages
 
 
@@ -48,7 +53,7 @@ class CoinClass:
             else:
                 setattr(self, k, v)
 
-# print('\n\n'.join(CoinDB().get_10m_notification_message()))
+# print('\n\n'.join(CoinDB().get_10m_notification_message(withConverter=True)))
 ######
 # assets_request_response = requests.get('http://api.coincap.io/v2/assets')
 #

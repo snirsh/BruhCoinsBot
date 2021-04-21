@@ -101,7 +101,10 @@ def market_notification_10m(bot):
 
 
 def market_notification(update: Update, context: CallbackContext) -> None:
-    message = '\n\n'.join(CoinDB.get_10m_notification_message())
+    if context.args[0].lower() == 'boomerang':
+        message = '\n\n'.join(CoinDB.get_10m_notification_message(True))
+    else:
+        message = '\n\n'.join(CoinDB.get_10m_notification_message())
     context.bot.send_message(
         update.message.chat_id,
         f"{message}",
