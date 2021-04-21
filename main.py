@@ -118,7 +118,7 @@ def main() -> None:
     # non-blocking and will stop the bot gracefully.
     updater.idle()
 
-    market_notification_10m(dispatcher.bot)
+    # market_notification_10m(dispatcher.bot)
     ###### EXAMPLES ######
     # dispatcher.add_handler(CommandHandler("start", start))
     # dispatcher.add_handler(CommandHandler("help", start))
