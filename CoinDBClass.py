@@ -36,7 +36,7 @@ class CoinDB:
                 symbol_and_name = f"{coin.name}"
             else:
                 symbol_and_name = f"{coin.symbol} | {coin.name}"
-            messages.append(f"{symbol_and_name} <u>${coin.priceUsd}</u> \n Past 24Hrs: <u>{coin.changePercent24Hr}%</u>")
+            messages.append(f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>${coin.priceUsd}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>')
         return messages
 
 
@@ -61,3 +61,4 @@ class CoinClass:
 #     print(f"{coin_symbol} - {coin_name}")
 #     print(f"Current price ${round(float(coin_price_usd), 2)}")
 #     print(f"Coin change (Past 24Hrs) {round(float(coin_change_pct_24hr), 2)}%")
+#     print(coin_dict)

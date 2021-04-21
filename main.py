@@ -90,7 +90,7 @@ def show_market(update: Update, context: CallbackContext) -> None:
 
 def market_notification_10m(bot):
     while True:
-        message = '\n\n'.join(CoinDB.get_10m_notification_message())
+        message = '\n\n\n'.join(CoinDB.get_10m_notification_message())
         bot.send_message(
             CRYPTO_GROUP_ID,
             f"{message}",
