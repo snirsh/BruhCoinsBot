@@ -37,11 +37,11 @@ class CoinDB:
             message = f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>{price_tag}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>\n'
             if some_currency_symbol:
                 try:
-                    message += f"<b>Market Cap:</b> {'{:,.2f}'.format(round(CurrencyConverter().convert(coin.marketCapUsd, currency.upper()), 2))} {custom_symbol.upper()} | <b>24Hr Volume:</b> {'{:,.2f}'.format(round(CurrencyConverter().convert(coin.volumeUsd24Hr, currency.upper()), 2))} {custom_symbol.upper()}"
+                    message += f"<b>Market Cap:</b> <u>{'{:,.2f}'.format(round(CurrencyConverter().convert(coin.marketCapUsd, currency.upper()), 2))} {custom_symbol.upper()}</u> | <b>24Hr Volume:</b> <u>{'{:,.2f}'.format(round(CurrencyConverter().convert(coin.volumeUsd24Hr, currency.upper()), 2))} {custom_symbol.upper()}</u>"
                 except ValueError:
-                    message += f"<b>Market Cap:</b> {'{:,.2f}'.format(coin.marketCapUsd)} $ | <b>24Hr Volume:</b> {'{:,.2f}'.format(coin.volumeUsd24Hr)} $"
+                    message += f"<b>Market Cap:</b> <u>{'{:,.2f}'.format(coin.marketCapUsd)} $</u> | <b>24Hr Volume:</b> <u>{'{:,.2f}'.format(coin.volumeUsd24Hr)} $</u>"
             else:
-                message += f"<b>Market Cap:</b> {'{:,.2f}'.format(coin.marketCapUsd)} $ | <b>24Hr Volume:</b> {'{:,.2f}'.format(coin.volumeUsd24Hr)} $"
+                message += f"<b>Market Cap:</b> <u>{'{:,.2f}'.format(coin.marketCapUsd)} $</u> | <b>24Hr Volume:</b> <u>{'{:,.2f}'.format(coin.volumeUsd24Hr)} $</u>"
             return message
         except KeyError:
             raise KeyError
