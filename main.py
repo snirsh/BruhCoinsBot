@@ -104,9 +104,10 @@ def market_notification(update: Update, context: CallbackContext) -> None:
     try:
         currency_symbol = context.args[0].lower()
         if currency_symbol and currency_symbol != 'usd':
-            message = '\n\n'.join(CoinDB.get_10m_notification_message(currency_symbol.upper())) + "<b>WHY USD IF ITS THE DEFAULT U CRAZY FAHK 🤦🏻‍</b>"
+            message = '\n\n'.join(CoinDB.get_10m_notification_message(currency_symbol.upper()))
         else:
-            message = '\n\n'.join(CoinDB.get_10m_notification_message())
+            message = '\n\n'.join(CoinDB.get_10m_notification_message()) + \
+                      "<b>WHY USD IF ITS THE DEFAULT U CRAZY FAHK 🤦🏻‍</b>"
     except (IndexError, ValueError):
         message = '\n\n'.join(CoinDB.get_10m_notification_message())
     context.bot.send_message(
