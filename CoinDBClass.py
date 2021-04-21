@@ -18,6 +18,7 @@ class CoinDB:
                 symbol_and_name = f"{coin.name}"
             else:
                 symbol_and_name = f"{coin.symbol} | {coin.name}"
+            price_tag = f"${coin.priceUsd}"
             try:
                 if some_currency_symbol:
                     currency = some_currency_symbol
