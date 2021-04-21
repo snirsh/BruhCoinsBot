@@ -11,7 +11,7 @@ class CoinDB:
         self._json = requests.get('http://api.coincap.io/v2/assets').json().get('data')
         self.coins = {coin_dict.get('symbol'): coin_dict for coin_dict in self._json}
 
-    def get_coin_data(self, symbol, some_currency_symbol):
+    def get_coin_data(self, symbol, some_currency_symbol=None):
         try:
             coin = CoinClass(self.coins[symbol])
             if coin.symbol == coin.name:
