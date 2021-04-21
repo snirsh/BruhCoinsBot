@@ -81,7 +81,7 @@ def show_one_coin(update: Update, context: CallbackContext) -> None:
         cdb = CoinDB()
         try:
             coin_symbol = context.args[0]
-            update.message.reply_text(cdb.get_coin_data(coin_symbol.upper()))
+            update.message.reply_text(cdb.get_coin_data(coin_symbol.upper()), parse_mode=ParseMode.HTML)
         except (IndexError, ValueError):
             update.message.reply_text('Fuck you doing? just tell me the symbol')
         except (KeyError):
