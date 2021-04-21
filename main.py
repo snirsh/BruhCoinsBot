@@ -106,7 +106,7 @@ def market_notification(update: Update, context: CallbackContext) -> None:
         if currency_symbol and currency_symbol != 'usd' and currency_symbol != 'aud':
             message = '\n\n'.join(CoinDB.get_10m_notification_message(currency_symbol.upper()))
         elif currency_symbol == 'aud':
-            message = '\n\n'.join(CoinDB.get_10m_notification_message()) + \
+            message = '\n\n'.join(CoinDB.get_10m_notification_message(currency_symbol.upper())) + \
                       "\n\n<b>You mean 🪃?</b>"
         else:
             message = '\n\n'.join(CoinDB.get_10m_notification_message()) + \
