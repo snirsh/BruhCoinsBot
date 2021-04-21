@@ -4,7 +4,7 @@ import logging
 import time
 
 from telegram import Update, ParseMode
-from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, CallbackContext
 
 # Enable logging
 logging.basicConfig(
