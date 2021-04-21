@@ -20,14 +20,12 @@ class CoinDB:
                 symbol_and_name = f"{coin.symbol} | {coin.name}"
             price_tag = f"${coin.priceUsd}"
             try:
-                if some_currency_symbol:
+                if some_currency_symbol and some_currency_symbol.lower() != 'usd':
                     currency = some_currency_symbol
                     custom_symbol = some_currency_symbol
                     if some_currency_symbol.lower() == "boomerangs":
                         currency = "AUD"
                         custom_symbol = "🪃"
-                    elif some_currency_symbol.lower() == 'usd':
-                        custom_symbol = "$"
                     try:
                         price_tag = f"{round(CurrencyConverter().convert(coin.priceUsd, 'USD', currency.upper()), 2)} {custom_symbol.upper()}"
                     except ValueError:
@@ -39,9 +37,9 @@ class CoinDB:
                 try:
                     message += f"<b>Market Cap:</b> <u>{'{:,.2f}'.format(round(CurrencyConverter().convert(coin.marketCapUsd, currency.upper()), 2))} {custom_symbol.upper()}</u> | <b>24Hr Volume:</b> <u>{'{:,.2f}'.format(round(CurrencyConverter().convert(coin.volumeUsd24Hr, currency.upper()), 2))} {custom_symbol.upper()}</u>"
                 except ValueError:
-                    message += f"<b>Market Cap:</b> <u>{'{:,.2f}'.format(coin.marketCapUsd)} $</u> | <b>24Hr Volume:</b> <u>{'{:,.2f}'.format(coin.volumeUsd24Hr)} $</u>"
+                    message += f"<b>Market Cap:</b> <u>${'{:,.2f}'.format(coin.marketCapUsd)}</u> | <b>24Hr Volume:</b> <u>${'{:,.2f}'.format(coin.volumeUsd24Hr)}</u>"
             else:
-                message += f"<b>Market Cap:</b> <u>{'{:,.2f}'.format(coin.marketCapUsd)} $</u> | <b>24Hr Volume:</b> <u>{'{:,.2f}'.format(coin.volumeUsd24Hr)} $</u>"
+                message += f"<b>Market Cap:</b> <u>${'{:,.2f}'.format(coin.marketCapUsd)}</u> | <b>24Hr Volume:</b> <u>${'{:,.2f}'.format(coin.volumeUsd24Hr)}</u>"
             return message
         except KeyError:
             raise KeyError
