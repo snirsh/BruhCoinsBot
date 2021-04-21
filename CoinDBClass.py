@@ -44,7 +44,7 @@ class CoinClass:
             else:
                 setattr(self, k, v)
 
-print('\n\n'.join(CoinDB().get_10m_notification_message()))
+# print('\n\n'.join(CoinDB().get_10m_notification_message()))
 ######
 # assets_request_response = requests.get('http://api.coincap.io/v2/assets')
 #
