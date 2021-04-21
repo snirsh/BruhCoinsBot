@@ -30,9 +30,9 @@ class CoinDB:
             coin = CoinClass(coin_dict)
             coins.append(coin)
         coins.sort(key=lambda c: abs(c.changePercent24Hr), reverse=True)
-        coins = list(filter(lambda c: c.changePercent24Hr > 5, coins))
+        coins = list(filter(lambda c: abs(c.changePercent24Hr) > 10, coins))
         for coin in coins:
-            messages.append(f"Showing data for: {coin.symbol} | {coin.name}\nCurrent price ${coin.priceUsd} || Coin change (Past 24Hrs) {coin.changePercent24Hr}%")
+            messages.append(f"<b>Showing data for: {coin.symbol} | {coin.name}</b>\n<b>Current price</b> ${coin.priceUsd} || <b>Coin change (Past 24Hrs)</b> {coin.changePercent24Hr}%")
         return messages
 
 
@@ -44,7 +44,7 @@ class CoinClass:
             else:
                 setattr(self, k, v)
 
-
+print('\n\n'.join(CoinDB().get_10m_notification_message()))
 ######
 # assets_request_response = requests.get('http://api.coincap.io/v2/assets')
 #
