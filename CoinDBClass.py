@@ -38,7 +38,7 @@ class CoinDB:
             else:
                 symbol_and_name = f"{coin.symbol} | {coin.name}"
             if withConverter:
-                price_tag = f"{CurrencyConverter().convert(coin.priceUsd, 'USD', 'AUD')} AUD"
+                price_tag = f"{round(CurrencyConverter().convert(coin.priceUsd, 'USD', 'AUD'), 2)} AUD"
             else:
                 price_tag = f"${coin.priceUsd}"
             messages.append(f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>{price_tag}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>')
