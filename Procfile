@@ -1,1 +1,1 @@
-worker: python main.py
+worker: python main.pyheroku git:remote -a bruh-telegram-bot
