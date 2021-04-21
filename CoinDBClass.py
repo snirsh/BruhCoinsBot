@@ -39,9 +39,9 @@ class CoinDB:
                 try:
                     message += f"<b>Market Cap:</b> {'{:,.2f}'.format(round(CurrencyConverter().convert(coin.marketCapUsd, currency.upper()), 2))} {custom_symbol.upper()} | <b>24Hr Volume:</b> {'{:,.2f}'.format(round(CurrencyConverter().convert(coin.volumeUsd24Hr, currency.upper()), 2))} {custom_symbol.upper()}"
                 except ValueError:
-                    message += f"<b>Market Cap:</b> {'{:,.2f}'.format(coin.marketCapUsd)} $| <b>24Hr Volume:</b> {'{:,.2f}'.format(coin.volumeUsd24Hr)} $"
+                    message += f"<b>Market Cap:</b> {'{:,.2f}'.format(coin.marketCapUsd)} $ | <b>24Hr Volume:</b> {'{:,.2f}'.format(coin.volumeUsd24Hr)} $"
             else:
-                message += f"<b>Market Cap:</b> {'{:,.2f}'.format(coin.marketCapUsd)} $| <b>24Hr Volume:</b> {'{:,.2f}'.format(coin.volumeUsd24Hr)} $"
+                message += f"<b>Market Cap:</b> {'{:,.2f}'.format(coin.marketCapUsd)} $ | <b>24Hr Volume:</b> {'{:,.2f}'.format(coin.volumeUsd24Hr)} $"
             return message
         except KeyError:
             raise KeyError
