@@ -95,6 +95,7 @@ def market_notification_10m(bot):
             CRYPTO_GROUP_ID,
             f"{message}",
             parse_mode=ParseMode.HTML,
+            disable_web_page_preview=True
         )
         time.sleep(86400)
 
@@ -104,6 +105,7 @@ def market_notification(update: Update, context: CallbackContext) -> None:
         update.message.chat_id,
         f"{message}",
         parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True
     )
 
 def main() -> None:
