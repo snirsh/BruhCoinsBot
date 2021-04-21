@@ -95,10 +95,16 @@ def market_notification_10m(bot):
             CRYPTO_GROUP_ID,
             f"{message}",
             parse_mode=ParseMode.HTML,
-
         )
         time.sleep(86400)
 
+def market_notification(update: Update, context: CallbackContext) -> None:
+    message = '\n\n'.join(CoinDB.get_10m_notification_message())
+    context.bot.send_message(
+        update.message.chat_id,
+        f"{message}",
+        parse_mode=ParseMode.HTML,
+    )
 
 def main() -> None:
     """Run bot."""
@@ -110,6 +116,7 @@ def main() -> None:
 
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("supwith", show_market))
+    dispatcher.add_handler(CommandHandler("UPDATEME", market_notification))
 
     # Start the Bot
     updater.start_polling()
