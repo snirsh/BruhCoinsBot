@@ -102,8 +102,9 @@ def market_notification_10m(bot):
 
 def market_notification(update: Update, context: CallbackContext) -> None:
     try:
-        if context.args[0].lower() == 'boomerangs':
-            message = '\n\n'.join(CoinDB.get_10m_notification_message(True))
+        currency_symbol = context.args[0].lower()
+        if currency_symbol and currency_symbol != 'usd':
+            message = '\n\n'.join(CoinDB.get_10m_notification_message(currency_symbol.upper())) + "<b>WHY USD IF ITS THE DEFAULT U CRAZY FAHK 🤦🏻‍</b>"
         else:
             message = '\n\n'.join(CoinDB.get_10m_notification_message())
     except (IndexError, ValueError):
@@ -118,7 +119,7 @@ def market_notification(update: Update, context: CallbackContext) -> None:
 
 def help_msg(update: Update, context: CallbackContext) -> None:
     message = "Waddap fhaka I'm here to update you on 💰 changes.\n\n<a>/supwith</a> CoinSymbol - will return the " \
-              "current coin's USD price.\n<a>/updateme</a> - will send back all the coins that had a +-10% change (or "\
+              "current coin's USD price.\n<a>/updateme</a> {currency_symbol} - will send back all the coins that had a +-10% change (or "\
               "more), over the past 24 Hours.\n\n\nSee ya! "
     context.bot.send_message(
         update.message.chat_id,
