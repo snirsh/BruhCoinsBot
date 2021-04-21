@@ -32,7 +32,11 @@ class CoinDB:
         coins.sort(key=lambda c: abs(c.changePercent24Hr), reverse=True)
         coins = list(filter(lambda c: abs(c.changePercent24Hr) > 10, coins))
         for coin in coins:
-            messages.append(f"<b>{coin.symbol} | {coin.name}</b> <u>${coin.priceUsd}</u> || <b>Past 24Hrs</b> <u>{coin.changePercent24Hr}%</u>")
+            if coin.symbol == coin.name:
+                symbol_and_name = f"{coin.name}"
+            else:
+                symbol_and_name = f"{coin.symbol} | {coin.name}"
+            messages.append(f"{symbol_and_name} <u>${coin.priceUsd}</u> \n Past 24Hrs: <u>{coin.changePercent24Hr}%</u>")
         return messages
 
 

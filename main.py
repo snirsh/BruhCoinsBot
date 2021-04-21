@@ -74,7 +74,7 @@ def unset(update: Update, context: CallbackContext) -> None:
 
 def show_market(update: Update, context: CallbackContext) -> None:
     chat_id = update.message.chat_id
-    if chat_id != CRYPTO_GROUP_ID:
+    if chat_id == CRYPTO_GROUP_ID:
         update.message.reply_text("WRONG GROUP BRUH")
         return
     else:
