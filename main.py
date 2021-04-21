@@ -109,7 +109,6 @@ def main() -> None:
 
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("supwith", show_market))
-    market_notification_10m(dispatcher.bot)
 
     # Start the Bot
     updater.start_polling()
@@ -119,6 +118,7 @@ def main() -> None:
     # non-blocking and will stop the bot gracefully.
     updater.idle()
 
+    market_notification_10m(dispatcher.bot)
     ###### EXAMPLES ######
     # dispatcher.add_handler(CommandHandler("start", start))
     # dispatcher.add_handler(CommandHandler("help", start))
