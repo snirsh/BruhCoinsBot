@@ -82,6 +82,8 @@ class CoinDB:
             messages.append(f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>{price_tag}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>')
         return messages
 
+    def you_know_this(self, coin_symbol):
+        return coin_symbol.upper() in self.coins.keys()
 
 class CoinClass:
     def __init__(self, dictionary):

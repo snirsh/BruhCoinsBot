@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 API_TOKEN_TELEGRAM = os.environ['API_TOKEN_TELEGRAM']
 CRYPTO_GROUP_ID = int(os.environ['CRYTO_GROUP_CHAT_ID'])
 
-
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
 def start(update: Update, _: CallbackContext) -> None:
@@ -91,21 +90,32 @@ def show_one_coin(update: Update, context: CallbackContext) -> None:
                 update.message.reply_text(cdb.get_coin_data(coin_symbol.upper()), parse_mode=ParseMode.HTML)
                 return
         except (IndexError, ValueError):
-            update.message.reply_text('Fuck you doing? just tell me the symbol')
+            update.message.reply_text('F**k you doing? just tell me the symbol')
         except (KeyError):
             update.message.reply_text('I dont know this coin man...')
 
+def show_multiple_coins(update: Update, context: CallbackContext) -> None:
+    chat_id = update.message.chat_id
+    if chat_id == CRYPTO_GROUP_ID:
+        update.message.reply_text("WRONG GROUP BRUH")
+        return
+    else:
+        cdb = CoinDB()
+        try:
+            coin_symbols = context.args[0].split(',')
+            for symbol in coin_symbols:
+                if not cdb.you_know_this(symbol):
+                    continue
+                try:
+                    converting_coin_symbol = context.args[1]
+                    update.message.reply_text(
+                        cdb.get_coin_data(symbol.upper(), some_currency_symbol=converting_coin_symbol),
+                        parse_mode=ParseMode.HTML)
+                except (IndexError, ValueError):
+                    update.message.reply_text(cdb.get_coin_data(symbol.upper()), parse_mode=ParseMode.HTML)
+        except (IndexError, ValueError):
+            update.message.reply_text(f"something went wrong with this")
 
-def market_notification_10m(bot):
-    while True:
-        message = '\n\n\n'.join(CoinDB.get_10m_notification_message())
-        bot.send_message(
-            CRYPTO_GROUP_ID,
-            f"{message}",
-            parse_mode=ParseMode.HTML,
-            disable_web_page_preview=True
-        )
-        time.sleep(86400)
 
 
 def market_notification(update: Update, context: CallbackContext) -> None:
@@ -151,6 +161,7 @@ def main() -> None:
 
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("supwith", show_one_coin))
+    dispatcher.add_handler(CommandHandler("supwithallthose", show_multiple_coins))
     dispatcher.add_handler(CommandHandler("UPDATEME", market_notification))
     dispatcher.add_handler(CommandHandler("help", help_msg))
 
@@ -162,7 +173,6 @@ def main() -> None:
     # non-blocking and will stop the bot gracefully.
     updater.idle()
 
-    market_notification_10m(dispatcher.bot)
     ###### EXAMPLES ######
     # dispatcher.add_handler(CommandHandler("start", start))
     # dispatcher.add_handler(CommandHandler("help", start))
