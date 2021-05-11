@@ -59,7 +59,7 @@ class CoinDB:
         for coin_dict in db.coins.values():
             coin = CoinClass(coin_dict)
             coins.append(coin)
-        coins.sort(key=lambda c: abs(c.changePercent24Hr), reverse=True)
+        coins.sort(key=lambda c: c.changePercent24Hr, reverse=True)
         coins = list(filter(lambda c: abs(c.changePercent24Hr) > 10, coins))
         for coin in coins:
             if coin.symbol == coin.name:
@@ -79,17 +79,22 @@ class CoinDB:
                     price_tag = f"{round(CurrencyConverter().convert(coin.priceUsd, 'USD', currency.upper()), 2)} {custom_symbol.upper()}"
                 except ValueError:
                     price_tag = f"${coin.priceUsd}"
-            messages.append(f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>{price_tag}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>')
+            messages.append(
+                f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>{price_tag}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>')
         return messages
 
     def you_know_this(self, coin_symbol):
         return coin_symbol.upper() in self.coins.keys()
 
+
 class CoinClass:
     def __init__(self, dictionary):
         for k, v in dictionary.items():
             if k in ['priceUsd', 'changePercent24Hr', 'marketCapUsd', 'volumeUsd24Hr']:
-                setattr(self, k, round(float(v), 2))
+                if v:
+                    setattr(self, k, round(float(v), 2))
+                else:
+                    setattr(self, k, round(float(0), 2))
             else:
                 setattr(self, k, v)
 
