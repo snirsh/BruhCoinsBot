@@ -13,70 +13,27 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+"""
+Secrets, Tokens, etc.
+"""
 API_TOKEN_TELEGRAM = os.environ['API_TOKEN_TELEGRAM']
 CRYPTO_GROUP_ID = int(os.environ['CRYTO_GROUP_CHAT_ID'])
 
+
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
-def start(update: Update, _: CallbackContext) -> None:
-    update.message.reply_text('Hi! Use /set <seconds> to set a timer')
-
-
-def alarm(context: CallbackContext) -> None:
-    """Send the alarm message."""
-    job = context.job
-    context.bot.send_message(job.context, text='Beep!')
-
-
-def remove_job_if_exists(name: str, context: CallbackContext) -> bool:
-    """Remove job with given name. Returns whether job was removed."""
-    current_jobs = context.job_queue.get_jobs_by_name(name)
-    if not current_jobs:
-        return False
-    for job in current_jobs:
-        job.schedule_removal()
-    return True
-
-
-def set_timer(update: Update, context: CallbackContext) -> None:
-    """Add a job to the queue."""
-    chat_id = update.message.chat_id
-    if chat_id != CRYPTO_GROUP_ID:
-        update.message.reply_text("WRONG GROUP BRUH")
-        return
-    try:
-        # args[0] should contain the time for the timer in seconds
-        due = int(context.args[0])
-        if due < 0:
-            update.message.reply_text('Sorry we can not go back to future!')
-            return
-
-        job_removed = remove_job_if_exists(str(chat_id), context)
-        context.job_queue.run_once(alarm, due, context=chat_id, name=str(chat_id))
-
-        text = 'Timer successfully set!'
-        if job_removed:
-            text += ' Old one was removed.'
-        update.message.reply_text(text)
-
-    except (IndexError, ValueError):
-        update.message.reply_text('Usage: /set <seconds>')
-
-
-def unset(update: Update, context: CallbackContext) -> None:
-    """Remove the job if the user changed their mind."""
-    chat_id = update.message.chat_id
-    job_removed = remove_job_if_exists(str(chat_id), context)
-    text = 'Timer successfully cancelled!' if job_removed else 'You have no active timer.'
-    update.message.reply_text(text)
-
-
 def show_one_coin(update: Update, context: CallbackContext) -> None:
+    """
+    If the group is correct, the bot will show one coin.
+    This is the function called when using 'supwith' comand followed by some coin symbol (DOGE)
+    and optionally a currency symbol (AUD).
+    """
     chat_id = update.message.chat_id
     if chat_id == CRYPTO_GROUP_ID:
         update.message.reply_text("WRONG GROUP BRUH")
         return
     else:
+        # Create CoinDB and parse the message
         cdb = CoinDB()
         try:
             coin_symbol = context.args[0]
@@ -94,7 +51,11 @@ def show_one_coin(update: Update, context: CallbackContext) -> None:
         except (KeyError):
             update.message.reply_text('I dont know this coin man...')
 
+
 def show_multiple_coins(update: Update, context: CallbackContext) -> None:
+    """
+    Basically, this function does what the previous one does but for multiple coins ('supwithallthose' command).
+    """
     chat_id = update.message.chat_id
     if chat_id == CRYPTO_GROUP_ID:
         update.message.reply_text("WRONG GROUP BRUH")
@@ -117,8 +78,10 @@ def show_multiple_coins(update: Update, context: CallbackContext) -> None:
             update.message.reply_text(f"something went wrong with this")
 
 
-
 def market_notification(update: Update, context: CallbackContext) -> None:
+    """
+    Creates a message including the top/worst performers in the past 24 hrs. ('updateme' command).
+    """
     try:
         currency_symbol = context.args[0].lower()
         if currency_symbol and currency_symbol != 'usd' and currency_symbol != 'aud':
@@ -140,8 +103,11 @@ def market_notification(update: Update, context: CallbackContext) -> None:
 
 
 def help_msg(update: Update, context: CallbackContext) -> None:
+    """
+    creates a string for the 'helpme' command.
+    """
     message = "Waddap fhaka I'm here to update you on 💰 changes.\n\n<a>/supwith</a> CoinSymbol - will return the " \
-              "current coin's USD price.\n<a>/updateme</a> {currency_symbol} - will send back all the coins that had a +-10% change (or "\
+              "current coin's USD price.\n<a>/updateme</a> {currency_symbol} - will send back all the coins that had a +-10% change (or " \
               "more), over the past 24 Hours.\n\n\nSee ya! "
     context.bot.send_message(
         update.message.chat_id,
@@ -172,12 +138,6 @@ def main() -> None:
     # SIGABRT. This should be used most of the time, since start_polling() is
     # non-blocking and will stop the bot gracefully.
     updater.idle()
-
-    ###### EXAMPLES ######
-    # dispatcher.add_handler(CommandHandler("start", start))
-    # dispatcher.add_handler(CommandHandler("help", start))
-    # dispatcher.add_handler(CommandHandler("set", set_timer))
-    # dispatcher.add_handler(CommandHandler("unset", unset))
 
 
 if __name__ == '__main__':
