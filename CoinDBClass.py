@@ -4,14 +4,19 @@ from currency_converter import CurrencyConverter
 
 class CoinDB:
     def __init__(self):
+        """
+        create the coinDB using Coincap API.
+        """
         self._json = requests.get('http://api.coincap.io/v2/assets').json().get('data')
         self.coins = {coin_dict.get('symbol'): coin_dict for coin_dict in self._json}
 
-    def refresh(self):
-        self._json = requests.get('http://api.coincap.io/v2/assets').json().get('data')
-        self.coins = {coin_dict.get('symbol'): coin_dict for coin_dict in self._json}
-
-    def get_coin_data(self, symbol, some_currency_symbol=None):
+    def get_coin_data(self, symbol, some_currency_symbol=None) -> str:
+        """
+        This function creates the CoinClass structure and parses the data to be representable.
+        :param symbol: BTC, ETH, XRP, DOGE(TO THE MOON) etc.
+        :param some_currency_symbol: USD, ILS, etc.
+        :return: A string containing a rich text representation of the data.
+        """
         try:
             coin = CoinClass(self.coins[symbol])
             if coin.symbol == coin.name:
@@ -44,15 +49,35 @@ class CoinDB:
         except KeyError:
             raise KeyError
 
-    def get_price_usd(self, symbol):
+    """
+    Getters:
+    get_price_usd
+    get_change_24hr
+    you_know_this: do you know this coin or nah
+    """
+    def get_price_usd(self, symbol) -> float:
         return round(float(self.get_coin_data(symbol).get('priceUsd')), 2)
 
-    def get_change_24hr(self, symbol):
+    def get_change_24hr(self, symbol) -> float:
         return round(float(self.get_coin_data(symbol).get('changePercent24Hr')), 2)
 
+    def you_know_this(self, coin_symbol) -> bool:
+        """
+        :param coin_symbol: BTC, ETH, DOGE, etc.
+        :return: BOOL: checks if the coin symbol is in our coin dict keys.
+        """
+        return coin_symbol.upper() in self.coins.keys()
+    """
+    Static methods:
+    get_10m_notification_message: A notification with the best/worst performers
+    """
     @staticmethod
     def get_10m_notification_message(some_currency_symbol=None) -> str:
-        # TODO: CREATE MESSAGE EVERY 10M
+        """
+        This method creates a nice string that includes the notification message that we want
+        :param some_currency_symbol: i.e USD, EU, AUD, ILS, etc.
+        :return: A string representation of the Telegram response message that we want to show the client
+        """
         db = CoinDB()
         messages = []
         coins = []
@@ -83,11 +108,13 @@ class CoinDB:
                 f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>{price_tag}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>')
         return messages
 
-    def you_know_this(self, coin_symbol):
-        return coin_symbol.upper() in self.coins.keys()
 
 
 class CoinClass:
+    """
+    A Class that is generated from the JSON that we've received in the above class.
+    Very straight forward using dictionary and key value pairs.
+    """
     def __init__(self, dictionary):
         for k, v in dictionary.items():
             if k in ['priceUsd', 'changePercent24Hr', 'marketCapUsd', 'volumeUsd24Hr']:
