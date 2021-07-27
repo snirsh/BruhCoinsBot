@@ -98,6 +98,10 @@ class CoinClass:
             else:
                 setattr(self, k, v)
 
+###
+# TODO: Move to a different file
+# Testing and demo commands
+###
 # print('\n\n'.join(CoinDB.get_10m_notification_message(some_currency_symbol='eur')))
 ######
 # assets_request_response = requests.get('http://api.coincap.io/v2/assets')
