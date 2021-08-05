@@ -1,4 +1,6 @@
+import os
 import requests
+import shrimpy
 from currency_converter import CurrencyConverter
 
 
@@ -7,8 +9,21 @@ class CoinDB:
         """
         create the coinDB using Coincap API.
         """
+        public_key = os.environ['SHRIMPY_PUB']
+        secret_key = os.environ['SHRIMPY_SEC']
+
+        self._shrimpy = shrimpy.ShrimpyApiClient(public_key, secret_key)
+        self._shrimpy_ticker = self._shrimpy.get_ticker('binance')
         self._json = requests.get('http://api.coincap.io/v2/assets').json().get('data')
         self.coins = {coin_dict.get('symbol'): coin_dict for coin_dict in self._json}
+
+        for coin_symbol, v in self.coins.items():
+            if v.get('changePercent24Hr'):
+                continue
+            shrimpy_coin = list(filter(lambda c: c.get('symbol') == coin_symbol, self._shrimpy_ticker))
+            if shrimpy_coin:
+                shrimpy_coin = shrimpy_coin[0]
+                v['changePercent24Hr'] = shrimpy_coin.get('percentChange24hUsd')
 
     def get_coin_data(self, symbol, some_currency_symbol=None) -> str:
         """
@@ -55,6 +70,7 @@ class CoinDB:
     get_change_24hr
     you_know_this: do you know this coin or nah
     """
+
     def get_price_usd(self, symbol) -> float:
         return round(float(self.get_coin_data(symbol).get('priceUsd')), 2)
 
@@ -67,10 +83,12 @@ class CoinDB:
         :return: BOOL: checks if the coin symbol is in our coin dict keys.
         """
         return coin_symbol.upper() in self.coins.keys()
+
     """
     Static methods:
     get_10m_notification_message: A notification with the best/worst performers
     """
+
     @staticmethod
     def get_10m_notification_message(some_currency_symbol=None) -> str:
         """
@@ -109,12 +127,12 @@ class CoinDB:
         return messages
 
 
-
 class CoinClass:
     """
     A Class that is generated from the JSON that we've received in the above class.
     Very straight forward using dictionary and key value pairs.
     """
+
     def __init__(self, dictionary):
         for k, v in dictionary.items():
             if k in ['priceUsd', 'changePercent24Hr', 'marketCapUsd', 'volumeUsd24Hr']:
@@ -124,4 +142,3 @@ class CoinClass:
                     setattr(self, k, round(float(0), 2))
             else:
                 setattr(self, k, v)
-
