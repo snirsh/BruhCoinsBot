@@ -14,7 +14,10 @@ class CoinDB:
 
         self._shrimpy = shrimpy.ShrimpyApiClient(public_key, secret_key)
         self._shrimpy_ticker = self._shrimpy.get_ticker('binance')
-        self._json = requests.get('http://api.coincap.io/v2/assets').json().get('data')
+        response_coincap = requests.get('http://api.coincap.io/v2/assets')
+        if response_coincap.status_code != 200:
+            response_coincap.raise_for_status()
+        self._json = response_coincap.json().get('data')
         self.coins = {coin_dict.get('symbol'): coin_dict for coin_dict in self._json}
 
         for coin_symbol, v in self.coins.items():

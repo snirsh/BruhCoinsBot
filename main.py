@@ -2,7 +2,7 @@ from CoinDBClass import CoinDB
 import os
 import logging
 import time
-
+import requests
 from telegram import Update, ParseMode
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
@@ -34,7 +34,13 @@ def show_one_coin(update: Update, context: CallbackContext) -> None:
         return
     else:
         # Create CoinDB and parse the message
-        cdb = CoinDB()
+        try:
+            cdb = CoinDB()
+        except requests.exceptions.HTTPError as e:
+            update.message.reply_text(
+                    e.response.text,
+                    parse_mode=ParseMode.HTML)
+            return
         try:
             coin_symbol = context.args[0]
             try:
@@ -61,7 +67,13 @@ def show_multiple_coins(update: Update, context: CallbackContext) -> None:
         update.message.reply_text("WRONG GROUP BRUH")
         return
     else:
-        cdb = CoinDB()
+        try:
+            cdb = CoinDB()
+        except requests.exceptions.HTTPError as e:
+            update.message.reply_text(
+                e.response.text,
+                parse_mode=ParseMode.HTML)
+            return
         try:
             coin_symbols = context.args[0].split(',')
             for symbol in coin_symbols:
@@ -85,15 +97,39 @@ def market_notification(update: Update, context: CallbackContext) -> None:
     try:
         currency_symbol = context.args[0].lower()
         if currency_symbol and currency_symbol != 'usd' and currency_symbol != 'aud':
-            message = '\n\n'.join(CoinDB.get_10m_notification_message(currency_symbol.upper()))
+            try:
+                message = '\n\n'.join(CoinDB.get_10m_notification_message(currency_symbol.upper()))
+            except requests.exceptions.HTTPError as e:
+                update.message.reply_text(
+                    e.response.text,
+                    parse_mode=ParseMode.HTML)
+                return
         elif currency_symbol == 'aud':
-            message = '\n\n'.join(CoinDB.get_10m_notification_message(currency_symbol.upper())) + \
-                      "\n\n<b>You mean 🪃?</b>"
+            try:
+                message = '\n\n'.join(CoinDB.get_10m_notification_message(currency_symbol.upper())) + \
+                          "\n\n<b>You mean 🪃?</b>"
+            except requests.exceptions.HTTPError as e:
+                update.message.reply_text(
+                    e.response.text,
+                    parse_mode=ParseMode.HTML)
+                return
         else:
-            message = '\n\n'.join(CoinDB.get_10m_notification_message()) + \
-                      "\n\n<b>WHY USD IF ITS THE DEFAULT?! U CRAZY FAHK 🤦🏻‍</b>"
+            try:
+                message = '\n\n'.join(CoinDB.get_10m_notification_message()) + \
+                          "\n\n<b>WHY USD IF ITS THE DEFAULT?! U CRAZY FAHK 🤦🏻‍</b>"
+            except requests.exceptions.HTTPError as e:
+                update.message.reply_text(
+                    e.response.text,
+                    parse_mode=ParseMode.HTML)
+                return
     except (IndexError, ValueError):
-        message = '\n\n'.join(CoinDB.get_10m_notification_message())
+        try:
+            message = '\n\n'.join(CoinDB.get_10m_notification_message())
+        except requests.exceptions.HTTPError as e:
+            update.message.reply_text(
+                e.response.text,
+                parse_mode=ParseMode.HTML)
+            return
     context.bot.send_message(
         update.message.chat_id,
         f"{message}",
