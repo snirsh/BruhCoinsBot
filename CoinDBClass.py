@@ -25,7 +25,10 @@ class CoinDB:
         else:
             self.__shrimpy_init()
 
-    def __shrimpy_init(self):
+    def __shrimpy_init(self) -> None:
+        """
+        Create the coinDB using the Shrimpy library and binance exchange.
+        """
         self.TYPE = DB_SOURCE_TYPE.Shrimpy
         public_key = os.environ['SHRIMPY_PUB']
         secret_key = os.environ['SHRIMPY_SEC']
@@ -155,7 +158,7 @@ class CoinClass:
         for k, v in dictionary.items():
             if k == "percentChange24hUsd":
                 k = "changePercent24Hr"
-            if type(v) is int or type(v) is float or re.match(r'^-?\d+(?:\.\d+)?$', v):
+            if type(v) is int or type(v) is float or re.match(r'^-?\d+(?:\.\d+)|(?:[eE][+\-]?\d+)|(\d+)?$', v):
                 setattr(self, k, round(float(v), 2))
             else:
                 setattr(self, k, v)
