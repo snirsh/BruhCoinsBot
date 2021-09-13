@@ -265,7 +265,7 @@ class CoinClass:
             else:
                 setattr(self, k, v)
         if "explorer" not in dictionary.keys():
-            if dictionary.get("symbol"):
+            if dictionary.get("symbol") and self.COINS_WEBSITES.get(dictionary.get("symbol")):
                 setattr(self, 'explorer', self.COINS_WEBSITES[dictionary.get("symbol")])
             else:
                 setattr(self, 'explorer', f'https://google.com/search?q={dictionary.get("symbol")}')

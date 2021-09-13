@@ -164,7 +164,7 @@ def main() -> None:
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("supwith", show_one_coin))
     dispatcher.add_handler(CommandHandler("supwithallthose", show_multiple_coins))
-    dispatcher.add_handler(CommandHandler("UPDATEME", market_notification))
+    dispatcher.add_handler(CommandHandler("updateme", market_notification))
     dispatcher.add_handler(CommandHandler("help", help_msg))
 
     # Start the Bot

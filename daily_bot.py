@@ -14,7 +14,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 CRYPTO_DAILY_UPDATED_BOT_TOKEN = os.environ['CRYPTO_DAILY_BRUH_BOT_API_TOKEN']
-CRYPTO_GROUP_ID = int(os.environ['CRYTO_GROUP_CHAT_ID'])
+if not os.environ.get("DEV"):
+    CRYPTO_GROUP_ID = int(os.environ['CRYTO_GROUP_CHAT_ID'])
+else:
+    CRYPTO_GROUP_ID = int(os.environ['DEV_GROUP'])
 
 
 def market_notification_evening(bot):
@@ -35,6 +38,7 @@ def market_notification_evening(bot):
 
 def help_msg(update: Update, context: CallbackContext) -> None:
     message = "I just tell you whats up daily... just leave me alone! 🙄"
+    logger.info(update.message.chat_id)
     context.bot.send_message(
         update.message.chat_id,
         f"{message}",
@@ -51,10 +55,15 @@ def main() -> None:
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("help", help_msg))
     from datetime import datetime
-    if datetime.utcnow().hour in [6, 7, 8]:
+    if os.environ.get('DEV'):
         market_notification_evening(dispatcher.bot)
+        updater.start_polling()
+        updater.idle()
     else:
-        logger.error("WRONG TIME TO POST!")
+        if datetime.utcnow().hour in [6, 7, 8]:
+            market_notification_evening(dispatcher.bot)
+        else:
+            logger.error("WRONG TIME TO POST!")
 
 
 if __name__ == '__main__':
