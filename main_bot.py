@@ -149,10 +149,10 @@ def help_msg(update: Update, context: CallbackContext) -> None:
     message = "Waddap fhaka I'm here to update you on 💰 changes.\n\n" \
               "<a>/supwith</a> CoinSymbol - will return the current coin's USD price.\n" \
               "<a>/updateme</a> {currency_symbol} - will send back all the coins that had a +-10% change (or more), over the past 24 Hours.\n" \
-              "<a>supwithallthose</a> - followed by comma separated {COIN_SYMBOLS} and an optional {FIAT_CURRENCY} will return the list of coin's USD Price and info (or converted).\n" \
-              "<a>updateme</a> - followed by an optional {FIAT_CURRENCY}, will send back all the coins that had a +-10% change (or more), over the past 24 Hours(or converted).\n" \
-              "<a>whatchaknow</a> - get a list of supported coins\n" \
-              "<a>help</a> - displays some data and commands" \
+              "<a>/supwithallthose</a> - followed by comma separated {COIN_SYMBOLS} and an optional {FIAT_CURRENCY} will return the list of coin's USD Price and info (or converted).\n" \
+              "<a>/updateme</a> - followed by an optional {FIAT_CURRENCY}, will send back all the coins that had a +-10% change (or more), over the past 24 Hours(or converted).\n" \
+              "<a>/whatchaknow</a> - get a list of supported coins\n" \
+              "<a>/help</a> - displays some data and commands" \
               "\n\n\nSee ya!"
     context.bot.send_message(
         update.message.chat_id,
