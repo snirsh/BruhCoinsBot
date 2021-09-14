@@ -28,6 +28,7 @@ def show_one_coin(update: Update, context: CallbackContext) -> None:
     This is the function called when using 'supwith' comand followed by some coin symbol (DOGE)
     and optionally a currency symbol (AUD).
     """
+    logger.info(f"Showing one coin: {context.args}")
     chat_id = update.message.chat_id
     if chat_id == CRYPTO_GROUP_ID:
         update.message.reply_text("WRONG GROUP BRUH")
@@ -38,8 +39,8 @@ def show_one_coin(update: Update, context: CallbackContext) -> None:
             cdb = CoinDB()
         except requests.exceptions.HTTPError as e:
             update.message.reply_text(
-                    e.response.text,
-                    parse_mode=ParseMode.HTML)
+                e.response.text,
+                parse_mode=ParseMode.HTML)
             return
         try:
             coin_symbol = context.args[0]
@@ -49,12 +50,15 @@ def show_one_coin(update: Update, context: CallbackContext) -> None:
                     cdb.get_coin_data(coin_symbol.upper(), some_currency_symbol=converting_coin_symbol),
                     parse_mode=ParseMode.HTML)
                 return
-            except (IndexError, ValueError):
+            except (IndexError, ValueError) as E:
+                logger.error(E)
                 update.message.reply_text(cdb.get_coin_data(coin_symbol.upper()), parse_mode=ParseMode.HTML)
                 return
-        except (IndexError, ValueError):
+        except (IndexError, ValueError) as E:
+            logger.error(E)
             update.message.reply_text('F**k you doing? just tell me the symbol')
-        except (KeyError):
+        except (KeyError) as E:
+            logger.error(E)
             update.message.reply_text('I dont know this coin man...')
 
 
@@ -144,7 +148,7 @@ def help_msg(update: Update, context: CallbackContext) -> None:
     """
     message = "Waddap fhaka I'm here to update you on 💰 changes.\n\n<a>/supwith</a> CoinSymbol - will return the " \
               "current coin's USD price.\n<a>/updateme</a> {currency_symbol} - will send back all the coins that had a +-10% change (or " \
-              "more), over the past 24 Hours.\n\n\nSee ya! "
+              "more), over the past 24 Hours.\n\n\nSee ya!"
     context.bot.send_message(
         update.message.chat_id,
         f"{message}",
@@ -152,7 +156,9 @@ def help_msg(update: Update, context: CallbackContext) -> None:
         disable_web_page_preview=True
     )
 
+
 def get_supported_coins(update: Update, context: CallbackContext) -> None:
+    logger.info("Getting supported coins")
     message = "Those are all the coins I'm familiar with:\n"
     coins = CoinDB().get_supported_symbols()
     message += '\n'.join(
@@ -164,6 +170,7 @@ def get_supported_coins(update: Update, context: CallbackContext) -> None:
         parse_mode=ParseMode.HTML,
         disable_web_page_preview=True
     )
+
 
 def main() -> None:
     """Run bot."""

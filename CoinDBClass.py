@@ -211,7 +211,6 @@ class CoinDB:
         Return a list with all supported coin symbols
         :return:
         """
-        coins = CoinDB().get_supported_symbols()
         db = CoinDB()
         return db.coins
 
