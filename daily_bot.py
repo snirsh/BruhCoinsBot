@@ -1,6 +1,6 @@
 import requests
 
-from CoinDBClass import CoinDB
+from CoinDBClass import CoinDB, COINS_WEBSITES
 import os
 import logging
 
@@ -46,6 +46,20 @@ def help_msg(update: Update, context: CallbackContext) -> None:
         disable_web_page_preview=True
     )
 
+def check_coin(update: Update, context: CallbackContext) -> None:
+    coins = CoinDB().get_supported_symbols()
+    message = '\n'.join([f'{k} - <a href="{COINS_WEBSITES.get(k) if COINS_WEBSITES.get(k) else ""}">{v.get("name")}</a>' for (k, v) in coins.items()])
+    if not os.environ.get("DEV"):
+        return
+    logger.info("Checking coin")
+    logger.info(update.message)
+    context.bot.send_message(
+        update.message.chat_id,
+        f""
+        f'{message}',
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True
+    )
 
 def main() -> None:
     updater = Updater(CRYPTO_DAILY_UPDATED_BOT_TOKEN)
@@ -56,6 +70,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("help", help_msg))
     from datetime import datetime
     if os.environ.get('DEV'):
+        dispatcher.add_handler(CommandHandler("checkcoin", check_coin))
         market_notification_evening(dispatcher.bot)
         updater.start_polling()
         updater.idle()
