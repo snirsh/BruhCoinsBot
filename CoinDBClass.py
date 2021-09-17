@@ -163,7 +163,7 @@ class CoinDB:
                         currency = "AUD"
                         custom_symbol = "🪃"
                     try:
-                        price_tag = f"{round(CurrencyConverter().convert(coin.priceUsd, 'USD', currency.upper()), 2)} {custom_symbol.upper()}"
+                        price_tag = f"{CurrencyConverter().convert(coin.priceUsd, 'USD', currency.upper())} {custom_symbol.upper()}"
                     except ValueError:
                         price_tag = f"${coin.priceUsd}"
             except ValueError:
@@ -244,7 +244,7 @@ class CoinDB:
                 elif some_currency_symbol.lower() == 'usd':
                     custom_symbol = "$"
                 try:
-                    price_tag = f"{round(CurrencyConverter().convert(coin.priceUsd, 'USD', currency.upper()), 2)} {custom_symbol.upper()}"
+                    price_tag = f"{CurrencyConverter().convert(coin.priceUsd, 'USD', currency.upper())} {custom_symbol.upper()}"
                 except ValueError:
                     price_tag = f"${coin.priceUsd}"
             if db.TYPE is DB_SOURCE_TYPE.CoinCap:
@@ -269,7 +269,7 @@ class CoinClass:
             if not v:
                 continue
             if type(v) is int or type(v) is float or re.match(r'^-?\d+(?:\.\d+)|(?:[eE][+\-]?\d+)|(\d+)?$', v):
-                setattr(self, k, round(float(v), 2))
+                setattr(self, k, float(v))
             else:
                 setattr(self, k, v)
         if "explorer" not in dictionary.keys():
