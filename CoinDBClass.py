@@ -168,7 +168,7 @@ class CoinDB:
                         price_tag = f"${coin.priceUsd}"
             except ValueError:
                 price_tag = f"${coin.priceUsd}"
-            message = f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>{price_tag}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>\n'
+            message = f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>{price_tag}</u> \nPast 24Hrs: <u>{round(float(coin.changePercent24Hr), 2)}%</u>\n'
             if self.TYPE is DB_SOURCE_TYPE.CoinCap:
                 if some_currency_symbol:
                     try:
@@ -249,10 +249,10 @@ class CoinDB:
                     price_tag = f"${coin.priceUsd}"
             if db.TYPE is DB_SOURCE_TYPE.CoinCap:
                 messages.append(
-                    f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>{price_tag}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>')
+                    f'<a href="{coin.explorer}">{symbol_and_name}</a> <u>{price_tag}</u> \nPast 24Hrs: <u>{round(float(coin.changePercent24Hr), 2)}%</u>')
             else:
                 messages.append(
-                    f'<b>{symbol_and_name}</b> <u>{price_tag}</u> \nPast 24Hrs: <u>{coin.changePercent24Hr}%</u>')
+                    f'<b>{symbol_and_name}</b> <u>{price_tag}</u> \nPast 24Hrs: <u>{round(float(coin.changePercent24Hr), 2)}%</u>')
         return messages
 
 
